@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {MyBackendService} from '../../my-backend.service';
+import {Observable} from 'rxjs';
+import {scan} from 'rxjs/operators';
 
 @Component({
   selector: 'app-bar',
@@ -8,7 +10,7 @@ import {MyBackendService} from '../../my-backend.service';
 })
 export class BarComponent implements OnInit {
 
-  single: any[] = [];
+  single$: Observable<any[]>;
   multi: any[];
 
   view: any[] = [700, 400];
@@ -30,12 +32,14 @@ export class BarComponent implements OnInit {
   constructor( private myBackendService: MyBackendService) { }
 
   ngOnInit(): void {
-    this.myBackendService.businessMetrics2$.subscribe(value => {
-      this.single = [...this.single, {
-        name: 'sales ' + (this.single.length + 1),
-        value
-      }];
-    })
+    this.single$ = this.myBackendService.businessMetrics2$.pipe(
+      scan<number, any[]>((currentValues, value ) => {
+        return [...currentValues, {
+          name: 'sales ' + (currentValues.length + 1),
+          value
+        }];
+      }, [])
+    );
   }
 
 }

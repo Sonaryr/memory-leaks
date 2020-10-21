@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {MyBackendService} from '../../my-backend.service';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-pie',
@@ -8,7 +10,7 @@ import {MyBackendService} from '../../my-backend.service';
 })
 export class PieComponent implements OnInit {
 
-  single: any[];
+  single$: Observable<any[]>;
   view: any[] = [700, 400];
 
   // options
@@ -25,21 +27,23 @@ export class PieComponent implements OnInit {
   constructor( private myBackendService: MyBackendService) { }
 
   ngOnInit(): void {
-    this.myBackendService.businessMetrics3$.subscribe(values => {
-      this.single = [{
-        name: 'Party 1',
-        value: values[0]
-      },{
-        name: 'Party 2',
-        value: values[1]
-      },{
-        name: 'Party 3',
-        value: values[2]
-      },{
-        name: 'Party 4',
-        value: values[3]
-      }]
-    })
+    this.single$ = this.myBackendService.businessMetrics3$.pipe(
+      map(values => {
+        return [{
+          name: 'Party 1',
+          value: values[0]
+        },{
+          name: 'Party 2',
+          value: values[1]
+        },{
+          name: 'Party 3',
+          value: values[2]
+        },{
+          name: 'Party 4',
+          value: values[3]
+        }];
+      })
+    );
   }
 
 }
