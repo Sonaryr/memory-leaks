@@ -14,6 +14,15 @@
 >
 </ngx-charts-line-chart>
 <div style="clear: both;">
+  <p>
+    Simulate tab changes:
+  <mat-button-toggle-group [(value)]="simulateUsage">
+    <mat-button-toggle [value]="false">No</mat-button-toggle>
+    <mat-button-toggle [value]="true">Yes</mat-button-toggle>
+  </mat-button-toggle-group>
+  </p>
+</div>
+<div style="clear: both;">
 <mat-button-toggle-group [(value)]="chartToDisplay" name="chartToDisplay" aria-label="Font Style">
   <mat-button-toggle value="PC">PC</mat-button-toggle>
   <mat-button-toggle value="Sales">Sales</mat-button-toggle>

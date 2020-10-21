@@ -32,7 +32,7 @@ export class BarComponent implements OnInit {
   ngOnInit(): void {
     this.myBackendService.businessMetrics2$.subscribe(value => {
       this.single = [...this.single, {
-        name: 'sales ' + this.single.length + 1,
+        name: 'sales ' + (this.single.length + 1),
         value
       }];
     })

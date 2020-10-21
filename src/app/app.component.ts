@@ -1,6 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {interval} from 'rxjs';
+import {interval, pipe} from 'rxjs';
 import {LineChartComponent} from '@swimlane/ngx-charts';
+import {filter} from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -12,6 +13,7 @@ export class AppComponent implements OnInit {
 
   chartToDisplay = 'PC';
   possibleCharts = ['PC', 'Sales', 'Elections'];
+  simulateUsage = false;
 
   @ViewChild(LineChartComponent, {static: false}) chart: LineChartComponent;
 
@@ -20,16 +22,16 @@ export class AppComponent implements OnInit {
     name: 'Used JS Heap',
     series: [{
       name: this.dateToTime(this.now),
-      value: window.performance.memory.usedJSHeapSize/ 1048576
+      value: (window.performance as any).memory.usedJSHeapSize/ 1048576
     }]
   }, {
     name: 'Total JS Heap',
     series: [{
       name: this.dateToTime(this.now),
-      value: window.performance.memory.totalJSHeapSize / 1048576
+      value: (window.performance as any).memory.totalJSHeapSize / 1048576
     }]
   }];
-  view: any[] = [700, 300];
+  view: any[] = [1000, 400];
 
   // options
   legend: boolean = true;
@@ -51,23 +53,26 @@ export class AppComponent implements OnInit {
 
     interval(5000).subscribe(() => {
       const now = new Date();
-      console.log('updating...')
       this.multi[0].series.push({
         "name": this.dateToTime(now),
-        "value": window.performance.memory.usedJSHeapSize / 1048576
+        "value": (window.performance as any).memory.usedJSHeapSize / 1048576
       });
       this.multi[1].series.push({
         "name": this.dateToTime(now),
-        "value": window.performance.memory.totalJSHeapSize / 1048576
+        "value": (window.performance as any).memory.totalJSHeapSize / 1048576
       });
       this.multi = [...this.multi];
       this.chart.update();
     });
 
-    interval(200).subscribe(() => {
-      var item = this.possibleCharts[Math.floor(Math.random() * this.possibleCharts.length)];
-      this.chartToDisplay = item;
-    })
+    interval(200)
+      .pipe(
+        filter(() => this.simulateUsage)
+      )
+      .subscribe(() => {
+        var item = this.possibleCharts[Math.floor(Math.random() * this.possibleCharts.length)];
+        this.chartToDisplay = item;
+      });
   }
 
   private dateToTime(date: Date): string {
