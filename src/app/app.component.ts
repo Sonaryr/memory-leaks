@@ -46,7 +46,7 @@ export class AppComponent implements OnInit {
   timeline: boolean = true;
 
   colorScheme = {
-    domain: ['#5AA454', '#E44D25']
+    domain: ['#E44D25', '#5AA454']
   };
 
   public ngOnInit(): void {
